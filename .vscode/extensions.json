@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "blockceptionltd.blockceptionvscodeminecraftbedrockdevelopmentextension",
     "netcorext.uuid-generator"
   ]
 }
