@@ -1,25 +1,25 @@
 // import * as test from 'mojang-gametest';
 import * as mc from 'mojang-minecraft';
 // import * as mcui from 'mojang-minecraft-ui';
-import { settings } from './settings.js';
-import { say, setBlock } from './slash_commands.js';
+import { setBlock } from './slash_commands.js';
 
+// 最初にオーバーワールドの次元情報を取得しておく（今回の使い方では毎回取得する必要がないので）
 const overworld = mc.world.getDimension('overworld');
-
-// 現在のティックを数える
-let currentTick = 0;
 
 /**
  * 1ティックごとに実行される
+ * https://docs.microsoft.com/ja-jp/minecraft/creator/scriptapi/mojang-minecraft/tickevent
+ *
+ * @param event
  */
-mc.world.events.tick.subscribe((): void => {
+mc.world.events.tick.subscribe((event) => {
   // 200ティックごとに（10秒ごとに）
-  if (settings.showElapsedTime && currentTick % 200 === 0) {
-    const seconds: number = Math.floor(currentTick / 20);
-    say(overworld, `今回ログインして${seconds}秒経過しました。`);
+  if (event.currentTick % 200 === 0) {
+    // ティック数を秒数に変換する
+    const seconds: number = Math.floor(event.currentTick / 20);
+    // /sayコマンドを使ってメッセージを表示
+    overworld.runCommand(`say アドオンを起動してから${seconds}秒経過しました。`);
   }
-
-  currentTick++;
 });
 
 /**
@@ -28,15 +28,7 @@ mc.world.events.tick.subscribe((): void => {
  *
  * @param event
  */
-mc.world.events.beforeChat.subscribe((event): void => {
-  // 送信したメッセージが特定の文字列に一致した場合
-  if (event.message === 'tick') {
-    // メッセージ内容を変更する
-    event.message = `tick: '${currentTick}'`;
-  }
-});
-// 同じイベントを複数登録しても有効
-mc.world.events.beforeChat.subscribe((event): void => {
+mc.world.events.beforeChat.subscribe((event) => {
   if (event.message === 'destroy') {
     // 送信者の位置を取得する
     const location = event.sender.location;
@@ -57,7 +49,7 @@ mc.world.events.beforeChat.subscribe((event): void => {
  *
  * @param event
  */
-mc.world.events.entityHurt.subscribe((event): void => {
+mc.world.events.entityHurt.subscribe((event) => {
   // 攻撃したエンティティがプレイヤーでなければ終了（早期リターン）
   if (event.damagingEntity.id !== 'minecraft:player') {
     return;
@@ -73,10 +65,11 @@ mc.world.events.entityHurt.subscribe((event): void => {
 
 /**
  * 発射物が何かに当たった時のイベント
+ * https://docs.microsoft.com/ja-jp/minecraft/creator/scriptapi/mojang-minecraft/projectilehitevent
  *
  * @param event
  */
-mc.world.events.projectileHit.subscribe((event): void => {
+mc.world.events.projectileHit.subscribe((event) => {
   // 当たったブロック情報を取得する
   const blockInfo = event.blockHit;
   // ブロックに当たっていれば真

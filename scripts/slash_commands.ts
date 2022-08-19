@@ -2,17 +2,6 @@ import * as mc from 'mojang-minecraft';
 import { toBlockLocation } from './utilities';
 
 /**
- * /say: 全員にメッセージを送る
- *
- * @param sender コマンドを実行する基準
- * @param message 送信するメッセージ内容
- */
-export function say(sender: mc.Dimension | mc.Player, message: string): void {
-  // スラッシュコマンド以外で送信する方法はある？
-  sender.runCommand(`say ${message}`);
-}
-
-/**
  * /setblock: 指定した位置のブロックを置き換える
  *
  * @param dimension 置き換えるブロックの次元
