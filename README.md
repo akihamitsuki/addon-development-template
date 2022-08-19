@@ -46,7 +46,6 @@ npm install gulp-cli --global
 必須ではありません。
 
 * Prettier - Code formatter
-* Blockception's Minecraft Bedrock Development
 * UUID Generator
 
 
